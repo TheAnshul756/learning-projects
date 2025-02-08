@@ -30,11 +30,14 @@ class MyAppState extends ChangeNotifier {
   var current = WordPair.random();
 
   void getNext() {
+    words.add(current);
     current = WordPair.random();
+    print(words);
     notifyListeners();
   }
 
   var favorites = <WordPair>{};
+  var words = <WordPair>[];
 
   void toggleFavorite() {
     if (favorites.contains(current)) {
@@ -52,7 +55,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   var selectedIndex = 0;
 
   @override
@@ -68,52 +70,51 @@ class _MyHomePageState extends State<MyHomePage> {
       default:
         throw UnimplementedError('Unknown index: $selectedIndex');
     }
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Scaffold(
-          body: Row(
-            children: [
-              SafeArea(
-                child: NavigationRail(
-                  extended: constraints.maxWidth >= 600,
-                  destinations: [
-                    NavigationRailDestination(
-                      icon: Icon(Icons.home),
-                      label: Text('Home'),
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.favorite),
-                      label: Text('Favorites'),
-                    ),
-                  ],
-                  selectedIndex: selectedIndex,
-                  onDestinationSelected: (value) {
-                    setState(() {
-                      selectedIndex = value;
-                    });
-                  },
-                ),
+    return LayoutBuilder(builder: (context, constraints) {
+      return Scaffold(
+        body: Row(
+          children: [
+            SafeArea(
+              child: NavigationRail(
+                extended: constraints.maxWidth >= 600,
+                destinations: [
+                  NavigationRailDestination(
+                    icon: Icon(Icons.home),
+                    label: Text('Home'),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.favorite),
+                    label: Text('Favorites'),
+                  ),
+                ],
+                selectedIndex: selectedIndex,
+                onDestinationSelected: (value) {
+                  setState(() {
+                    selectedIndex = value;
+                  });
+                },
               ),
-              Expanded(
-                child: Container(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  child: page,
-                ),
+            ),
+            Expanded(
+              child: Container(
+                color: Theme.of(context).colorScheme.primaryContainer,
+                child: page,
               ),
-            ],
-          ),
-        );
-      }
-    );
+            ),
+          ],
+        ),
+      );
+    });
   }
 }
-
 
 class GeneratorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     var pair = appState.current;
+    var words = appState.words;
+    var favs = appState.favorites;
 
     IconData icon;
     if (appState.favorites.contains(pair)) {
@@ -126,6 +127,9 @@ class GeneratorPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Expanded(
+            child: ListWords(words: words, favs: favs),
+          ),
           BigCard(pair: pair),
           SizedBox(height: 10),
           Row(
@@ -153,12 +157,39 @@ class GeneratorPage extends StatelessWidget {
   }
 }
 
+class ListWords extends StatelessWidget {
+  const ListWords({
+    super.key,
+    required this.words,
+    required this.favs,
+  });
+
+  final List<WordPair> words;
+  final Set<WordPair> favs;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        for (var pair in words)
+          // Row(
+          //   children: [
+          //     Icon(favs.contains(pair) ? Icons.favorite : Icons.favorite_border),
+          //     Text(pair.asLowerCase),
+          //   ],
+          // ),
+          Text(pair.asLowerCase),
+      ],
+    );
+  }
+}
+
 class FavoritesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     var favorites = appState.favorites.toList();
-  
+
     if (appState.favorites.isEmpty) {
       return Center(
         child: Text('No favorites yet.'),
