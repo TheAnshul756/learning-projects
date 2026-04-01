@@ -195,7 +195,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   crossAxisCount: columns,
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 20,
-                  childAspectRatio: columns == 1 ? 16 / 11.5 : 16 / 12.5,
+                  mainAxisExtent: _cardHeight(constraints.maxWidth, columns),
                 ),
                 delegate: SliverChildBuilderDelegate(
                   (context, index) => VideoCard(
@@ -232,5 +232,10 @@ class _SearchScreenState extends State<SearchScreen> {
     if (width >= 800) return 3;
     if (width >= 500) return 2;
     return 1;
+  }
+
+  double _cardHeight(double availableWidth, int columns) {
+    final cardWidth = (availableWidth - 24 - (columns - 1) * 12) / columns;
+    return cardWidth * 9 / 16 + 90;
   }
 }

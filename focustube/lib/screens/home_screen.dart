@@ -193,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisCount: crossAxisCount,
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 20,
-                  childAspectRatio: _cardAspectRatio(crossAxisCount),
+                  mainAxisExtent: _cardHeight(constraints.maxWidth, crossAxisCount),
                 ),
                 delegate: SliverChildBuilderDelegate(
                   (context, index) => VideoCard(
@@ -232,11 +232,11 @@ class _HomeScreenState extends State<HomeScreen> {
     return 1;
   }
 
-  double _cardAspectRatio(int columns) {
-    // thumbnail (16:9) + ~80px info text
-    // ratio = width / height; wider cards need different ratio
-    if (columns == 1) return 16 / 11.5;
-    return 16 / 12.5;
+  double _cardHeight(double availableWidth, int columns) {
+    // 24 = SliverPadding (12 left + 12 right), (columns-1)*12 = crossAxisSpacing gaps
+    final cardWidth = (availableWidth - 24 - (columns - 1) * 12) / columns;
+    // thumbnail (16:9) + 90px for title/channel/meta text + spacing
+    return cardWidth * 9 / 16 + 90;
   }
 }
 
