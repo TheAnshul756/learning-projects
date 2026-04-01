@@ -36,6 +36,7 @@ migrate_working_dir/
 
 # Project-specific
 pubspec.lock
+web/index.html
 
 # Symbolication related
 app.*.symbols
