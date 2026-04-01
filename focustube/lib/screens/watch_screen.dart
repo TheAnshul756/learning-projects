@@ -41,8 +41,7 @@ class _WatchScreenState extends State<WatchScreen> {
         showControls: true,
         showFullscreenButton: true,
         playsInline: true,
-        privacyEnhancedMode: true, // uses youtube-nocookie.com
-        rel: false,                // limit related videos to same channel
+        strictRelatedVideos: true, // limit related videos to same channel
         showVideoAnnotations: false,
         mute: false,
       ),
