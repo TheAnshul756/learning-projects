@@ -32,7 +32,6 @@ class _WatchScreenState extends State<WatchScreen> {
   bool _commentsLoaded = false;
 
   bool _descriptionExpanded = false;
-  final _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -55,7 +54,6 @@ class _WatchScreenState extends State<WatchScreen> {
   @override
   void dispose() {
     _playerController.close();
-    _scrollController.dispose();
     super.dispose();
   }
 

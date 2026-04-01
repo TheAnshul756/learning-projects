@@ -56,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     try {
       final yt = context.read<YouTubeService>();
-      final result = await yt.getFeed(subPageToken: refresh ? null : null);
+      final result = await yt.getFeed();
       if (mounted) {
         setState(() {
           _videos.addAll(result.videos);
